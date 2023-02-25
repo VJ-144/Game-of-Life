@@ -86,8 +86,8 @@ def update_Game(N, condition, lattice, Run):
     new_lattice = lattice.copy()
 
     # setting up animantion figure
-    fig = plt.figure()
-    im=plt.imshow(new_lattice, animated=True)
+    # fig = plt.figure()
+    # im=plt.imshow(new_lattice, animated=True)
 
     # number of sweeps for simulation
     nstep=100
@@ -136,10 +136,10 @@ def update_Game(N, condition, lattice, Run):
             data.write('{0:5.5e} {1:5.5e}\n'.format(total_time, active_sites))
 
             # animates spin configuration 
-            plt.cla()
-            im=plt.imshow(lattice, animated=True)
-            plt.draw()
-            plt.pause(0.0001) 
+            # plt.cla()
+            # im=plt.imshow(lattice, animated=True)
+            # plt.draw()
+            # plt.pause(0.0001) 
 
 
     data.close()
