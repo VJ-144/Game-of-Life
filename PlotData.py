@@ -43,7 +43,7 @@ def plotHist():
 def SingleEquilibrium():
 
 
-    filename = 'RandomDynamics_50N_Run1.dat'
+    filename = 'RandomDynamics_10N_Run2.dat'
     condition = f'Random'
 
     pathToFile = os.getcwd() + f'/Data/{condition}/'
@@ -66,8 +66,8 @@ def SingleEquilibrium():
 
 
 def main():
-    # SingleEquilibrium()
-    plotHist()
+    SingleEquilibrium()
+    # plotHist()
     return 0
 
 main()

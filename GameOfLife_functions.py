@@ -90,7 +90,7 @@ def update_Game(N, condition, lattice, Run):
     # im=plt.imshow(new_lattice, animated=True)
 
     # number of sweeps for simulation
-    nstep=100
+    nstep=10000
 
     # sweeps counter
     sweeps = 0

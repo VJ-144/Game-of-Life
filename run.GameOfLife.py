@@ -20,16 +20,17 @@ import sys
 
 def main():
 
-    N, condition = gom.initialise_simulation()
-
-    if (condition=='blinker' or condition=='glider'):
-        lattice = np.zeros([N,N])
-    else:
-        lattice = np.random.choice([0,1], size=[N,N])
-
     NumOfRun = 3
 
+    N, condition = gom.initialise_simulation()
+
     for Run in range(NumOfRun):
+
+        if (condition=='blinker' or condition=='glider'):
+            lattice = np.zeros([N,N])
+        else:
+            lattice = np.random.choice([0,1], size=[N,N])
+
         gom.update_Game(N, condition, lattice, Run)
 
 
