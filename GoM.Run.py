@@ -20,7 +20,7 @@ import sys
 
 def main():
 
-    NumOfRun = 3
+    NumOfRun = 1
 
     N, condition = gom.initialise_simulation()
 

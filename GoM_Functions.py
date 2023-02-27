@@ -86,11 +86,11 @@ def update_Game(N, condition, lattice, Run):
     new_lattice = lattice.copy()
 
     # setting up animantion figure
-    # fig = plt.figure()
-    # im=plt.imshow(new_lattice, animated=True)
+    fig = plt.figure()
+    im=plt.imshow(new_lattice, animated=True)
 
     # number of sweeps for simulation
-    nstep=10000
+    nstep=200
 
     # sweeps counter
     sweeps = 0
@@ -101,6 +101,8 @@ def update_Game(N, condition, lattice, Run):
     start_time= datetime.datetime.now()
 
     for n in range(nstep):
+        xcm_top = 0
+        ycm_top = 0
         for ij in itertools.product(range(N), repeat=2):
 
             i,j = ij
@@ -108,7 +110,7 @@ def update_Game(N, condition, lattice, Run):
             AliveNeighbors = neighbors(ij, lattice, N)
 
             # update rules for alive cell
-            if (cell == 1 ):
+            if (cell == 1):
                 if (AliveNeighbors<2 or AliveNeighbors>3):
                     new_lattice[i,j] = 0
                 elif(AliveNeighbors==2 or AliveNeighbors==3):
@@ -119,27 +121,61 @@ def update_Game(N, condition, lattice, Run):
                 if(AliveNeighbors==3):
                     new_lattice[i,j] = 1
 
+
+            # calculating glider cm
+            if (condition=='glider' and cell==1):
+
+                xcm_idx = np.where(lattice == 1)[0]
+                ycm_idx = np.where(lattice == 1)[1]
+                
+                xmin = np.min(xcm_idx)
+                xmax = np.max(xcm_idx)
+
+                ymin = np.min(ycm_idx)
+                ymax = np.max(ycm_idx)
+
+                deltaX = np.abs(xmax - xmin)
+                deltaY = np.abs(ymax - ymin)
+
+                if (deltaX > N/2 or deltaY > N/2): continue
+
+                xcm_top += (i * cell )
+                ycm_top += (j * cell )
+
         lattice = new_lattice.copy()
 
-        if(n%10==0): 
+        if(n%5==0): 
 
             # prints current number of sweep to terminal
-            sweeps +=10
+            sweeps +=1
             print(f'sweeps={sweeps}', end='\r')
 
 
             # writes new spin configuration energy and magnetism data to file 
             measurement_time = datetime.datetime.now()
             total_time = (measurement_time - start_time).total_seconds()
- 
+
+            # calculating number of active sites
             active_sites = np.sum(lattice)
-            data.write('{0:5.5e} {1:5.5e}\n'.format(total_time, active_sites))
+
+            # storing center of mass data if glider simulation
+            if (condition=='glider'):
+
+                xcm = xcm_top/np.sum(lattice)
+                ycm = ycm_top/np.sum(lattice)         
+
+                if (deltaX > N/2 or deltaY > N/2): continue
+
+                data.write('{0:5.5e} {1:5.5e} {2:5.5e}\n'.format(total_time, xcm, ycm))
+
+            else:
+                data.write('{0:5.5e} {1:5.5e}\n'.format(total_time, active_sites))
 
             # animates spin configuration 
-            # plt.cla()
-            # im=plt.imshow(lattice, animated=True)
-            # plt.draw()
-            # plt.pause(0.0001) 
+            plt.cla()
+            im=plt.imshow(lattice, animated=True)
+            plt.draw()
+            plt.pause(0.0001) 
 
 
     data.close()
