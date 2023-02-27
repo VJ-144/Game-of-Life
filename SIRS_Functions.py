@@ -80,12 +80,12 @@ def update_SIRS(N, p, lattice):
     p1, p2, p3 = p
 
     # setting up animantion figure
-    fig = plt.figure()
-    im=plt.imshow(lattice, animated=True)
-    fig.colorbar(im)
+    # fig = plt.figure()
+    # im=plt.imshow(lattice, animated=True)
+    # fig.colorbar(im)
 
     # number of sweeps for simulation
-    nstep=10
+    nstep=10100
 
     # sweeps counter
     sweeps = 0
@@ -131,7 +131,7 @@ def update_SIRS(N, p, lattice):
             if (cell == 1 and p3 > p3_threshold): lattice[i,j] = 0
 
 
-        if(n%1==0):
+        if(n%10==0):
 
             # count the number of infected states
             infected_MatTrue = lattice[lattice==-1]
@@ -144,11 +144,10 @@ def update_SIRS(N, p, lattice):
             data.write('{0:5.5e}\n'.format(Num_infected_sites))
 
             # animates spin configuration 
-            plt.cla()
-            im=plt.imshow(lattice, animated=True)
-            plt.draw()
-            plt.pause(0.0001) 
-
+            # plt.cla()
+            # im=plt.imshow(lattice, animated=True)
+            # plt.draw()
+            # plt.pause(0.0001) 
 
     data.close()
 
