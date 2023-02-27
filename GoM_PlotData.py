@@ -10,7 +10,7 @@ def plotHist():
     condition = 'Random'
 
 
-    pathToFile = os.getcwd() + f'/Data/{condition}/'
+    pathToFile = os.getcwd() + f'/GoM_Data/{condition}/'
     directory = os.fsencode(pathToFile)
 
     hist_data = []
@@ -22,7 +22,7 @@ def plotHist():
         directory = os.fsdecode(directory)
         path = os.path.join(directory, filename)
 
-
+        # print(filename)
         # reads in stored energy and magnetism data from file
         rawData = np.loadtxt(path)
         equilibrium_time = rawData[:,0]
@@ -49,7 +49,7 @@ def plotHist():
 
     # plotting histogram
     ax.set_title('Absorbing States Equlibrium Time Histogram', pad=16)
-    ax.hist(hist_data, bins=8, density=True)
+    ax.hist(hist_data, bins=20, density=True)
     ax.set_xlabel('Time [s]')
     ax.set_ylabel('Proability [%]')
     plt.show()
@@ -132,8 +132,8 @@ def COM_velocity():
 
 def main():
     # SingleEquilibrium()
-    # plotHist()
-    COM_velocity()
+    plotHist()
+    # COM_velocity()
     return 0
 
 main()
