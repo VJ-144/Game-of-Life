@@ -33,6 +33,9 @@ def main():
         for i, p1 in enumerate(p1_list):
                 for j, p3 in enumerate(p1_list):
 
+                    p1 = np.round(p1, 2)
+                    p3 = np.round(p3, 2)
+                    
                     p_new = (p1, p2, p3)
                     new_lattice = SIRS.update_SIRS(N, p_new, lattice)
                     print(f'completed @ P1-{p1} P2-{p2} P3-{p3}')
