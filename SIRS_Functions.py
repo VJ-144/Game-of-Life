@@ -131,14 +131,14 @@ def update_SIRS(N, p, lattice):
             if (cell == 1 and p3 > p3_threshold): lattice[i,j] = 0
 
 
-        if(n%10==0):
+        if(n%10==0 and n>100):
 
             # count the number of infected states
             infected_MatTrue = lattice[lattice==-1]
             Num_infected_sites = np.count_nonzero(infected_MatTrue)             
 
             # prints current number of sweep to terminal
-            sweeps +=1
+            sweeps +=10
             print(f'sweeps={sweeps}', end='\r')
 
             data.write('{0:5.5e}\n'.format(Num_infected_sites))
