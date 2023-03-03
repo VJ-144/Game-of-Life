@@ -20,7 +20,10 @@ import sys
 
 def main():
 
-    N, p, BatchRun = SIRS.initialise_simulation()
+    N, p, BatchRun, immune = SIRS.initialise_simulation()
+
+    # if (len(params)== 3): N, p, BatchRun = params
+    # elif(len(params)== 4): N, p, BatchRun, immune = params
 
     lattice = np.random.choice([-1,0,1], size=[N,N])
 
@@ -37,12 +40,12 @@ def main():
                     p3 = np.round(p3, 2)
                     
                     p_new = (p1, p2, p3)
-                    new_lattice = SIRS.update_SIRS(N, p_new, lattice)
+                    new_lattice = SIRS.update_SIRS(N, p_new, lattice, immune)
                     print(f'completed @ P1-{p1} P2-{p2} P3-{p3}')
                     lattice = new_lattice
 
     elif (BatchRun=='False'):
-        SIRS.update_SIRS(N, p, lattice)
+        SIRS.update_SIRS(N, p, lattice, immune)
 
 
 main()

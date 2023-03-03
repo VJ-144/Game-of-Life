@@ -95,7 +95,7 @@ def update_Game(N, condition, lattice, Run):
     # sweeps counter
     sweeps = 0
 
-    outFilePath = os.getcwd() + f'/Data/{condition}/{condition}Dynamics_{N}N_Run{Run}.dat'
+    outFilePath = os.getcwd() + f'/GoM_Data/{condition}/{condition}Dynamics_{N}N_Run{Run}.dat'
     data=open( outFilePath,'w')
 
     start_time= datetime.datetime.now()
@@ -166,10 +166,10 @@ def update_Game(N, condition, lattice, Run):
 
                 if (deltaX > N/2 or deltaY > N/2): continue
 
-                data.write('{0:5.5e} {1:5.5e} {2:5.5e}\n'.format(total_time, xcm, ycm))
+                data.write('{0:5.5e} {1:5.5e} {2:5.5e}\n'.format(n, xcm, ycm))
 
             else:
-                data.write('{0:5.5e} {1:5.5e}\n'.format(total_time, active_sites))
+                data.write('{0:5.5e} {1:5.5e}\n'.format(n, active_sites))
 
             # animates spin configuration 
             plt.cla()

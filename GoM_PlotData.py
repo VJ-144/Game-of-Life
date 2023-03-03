@@ -60,10 +60,10 @@ def plotHist():
 def SingleEquilibrium():
 
 
-    filename = 'RandomDynamics_50N_Run37.dat'
+    filename = 'RandomDynamics_50N_Run38.dat'
     condition = f'Random'
 
-    pathToFile = os.getcwd() + f'/Data/{condition}/'
+    pathToFile = os.getcwd() + f'/GoM_Data/{condition}/'
     path = os.path.join(pathToFile, filename)
 
     rawData = np.loadtxt(path)
@@ -74,7 +74,7 @@ def SingleEquilibrium():
 
     # setting figure title
     ax.set_title('Active Sites', pad=16)
-    ax.errorbar(time, active_sites, marker='o', markersize = 4, linestyle='--', color='black')
+    ax.errorbar(time[1:200], active_sites[1:200], marker='o', markersize = 4, linestyle='--', color='black')
     ax.set_xlabel('Time [s]')
     ax.set_ylabel('Number of Active Sites [-]')
     plt.show()
@@ -87,10 +87,10 @@ def line(m, x, c):
 def COM_velocity():
 
 
-    filename = 'gliderDynamics_50N_Run0-Good.dat'
+    filename = 'gliderDynamics_50N_Run0.dat'
     condition = f'glider'
 
-    pathToFile = os.getcwd() + f'/Data/{condition}/'
+    pathToFile = os.getcwd() + f'/GoM_Data/{condition}/'
     path = os.path.join(pathToFile, filename)
 
     rawData = np.loadtxt(path)
@@ -102,7 +102,7 @@ def COM_velocity():
     fig.suptitle(f'Glider Center of Mass', fontsize=16)
     fig.subplots_adjust(top=0.8, hspace=0.55, wspace=0.4)
 
-    xx = np.arange(7)
+    xx = np.arange(200)
 
     params1, pcov1 = curve_fit(line, time[2:10], xcm[2:10])
     params2, pcov2 = curve_fit(line, time[2:10], ycm[2:10])
@@ -113,15 +113,15 @@ def COM_velocity():
     # setting figure title
     ax[0].set_title('X-Component', pad=10)
     ax[0].errorbar(time, xcm, marker='o', markersize = 3, linestyle='', color='black', label='Glider COM')
-    ax[0].errorbar(xx[2:10], line(xx[2:10], mx, cx), linestyle='-', color='r', label=f'Gradient={np.round(mx,2)}\nY-Intercept={np.round(cx,2)}')
-    ax[0].set_xlabel('Time [s]')
+    ax[0].errorbar(xx[20:80], line(xx[20:80], mx, cx), linestyle='-', color='r', label=f'Gradient={np.round(mx,2)}\nY-Intercept={np.round(cx,2)}')
+    ax[0].set_xlabel('Sweeps [-]')
     ax[0].set_ylabel('Center of Mass [-]')
     ax[0].legend(loc=0, prop={'size': 6})
 
     ax[1].set_title('Y-Component', pad=10)
     ax[1].errorbar(time, ycm, marker='o', markersize = 3, linestyle='', color='black', label='Glider COM')
-    ax[1].errorbar(xx[2:10], line(xx[2:10], my, cy), linestyle='-', color='r', label=f'Gradient={np.round(my,2)}\nY-Intercept={np.round(cy,2)}')
-    ax[1].set_xlabel('Time [s]')
+    ax[1].errorbar(xx[20:80], line(xx[20:80], my, cy), linestyle='-', color='r', label=f'Gradient={np.round(my,2)}\nY-Intercept={np.round(cy,2)}')
+    ax[1].set_xlabel('Sweeps [s]')
     ax[1].set_ylabel('Center of Mass [-]')
     ax[1].legend(loc=2, prop={'size': 6})
 
@@ -131,8 +131,8 @@ def COM_velocity():
 
 
 def main():
-    # SingleEquilibrium()
-    plotHist()
+    SingleEquilibrium()
+    # plotHist()
     # COM_velocity()
     return 0
 

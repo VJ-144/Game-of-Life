@@ -18,6 +18,7 @@ import itertools
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+from matplotlib.colors import ListedColormap
 
 
 def Infected_neighbors(idx, lattice, N):
@@ -41,7 +42,7 @@ def Infected_neighbors(idx, lattice, N):
 def initialise_simulation():
 
     # checks command line arguments are correct otherwise stops simulation
-    if (len(sys.argv) < 5):
+    if (len(sys.argv) < 6):
         print("Error Input Usage: python ising.animation.py N p1 p2 p3 --optional BatchRun [True/False]")
         sys.exit()
     
@@ -50,10 +51,11 @@ def initialise_simulation():
     p2=float(sys.argv[3])
     p3=float(sys.argv[4])
     BatchRun = str(sys.argv[5])
+    imm_percent = float(sys.argv[6])
 
     p = (p1, p2, p3)
 
-    return N, p, BatchRun 
+    return N, p, BatchRun, imm_percent
 
 def GenerateRandom_Idx(N):
     """
@@ -75,20 +77,36 @@ def GenerateRandom_Idx(N):
     # returns tuple of indice i and j arrays to sample the spin configuration 
     return (i, j)
 
-def update_SIRS(N, p, lattice):
+def update_SIRS(N, p, lattice, imm_percent):
   
     p1, p2, p3 = p
 
+
+    if (imm_percent!=0):
+        imm_size = int(imm_percent*(N*N))
+        imm_x = np.random.choice(N, imm_size)
+        imm_y = np.random.choice(N, imm_size)
+        lattice[imm_x, imm_y] = -2
+        cmap = ListedColormap(['r', 'limegreen', 'yellow', 'dodgerblue'])
+        vmin = -2
+        vmax = 1
+    else:
+        cmap = ListedColormap(['limegreen', 'yellow', 'dodgerblue'])
+        vmin = -1
+        vmax = 1
+
+
     # setting up animantion figure
-    # fig = plt.figure()
-    # im=plt.imshow(lattice, animated=True)
-    # fig.colorbar(im)
+    fig = plt.figure()
+    im=plt.imshow(lattice, animated=True, cmap=cmap, vmin=vmin, vmax=vmax)
+    fig.colorbar(im)
 
     # number of sweeps for simulation
     nstep=10100
 
     # sweeps counter
     sweeps = 0
+
 
     outFilePath = os.getcwd() + f'/SIRS_Data/SIRS_{N}N_P1-{p1}_P2-{p2}_P3-{p3}.dat'
     data=open( outFilePath,'w')
@@ -114,10 +132,11 @@ def update_SIRS(N, p, lattice):
             # infected == -1
             # susceptabile == 0
             # recovered == 1
+            # immune ==-2
 
-            p1_threshold = random.random()
-            p2_threshold = random.random()
-            p3_threshold = random.random()   
+            p1_threshold = np.random.random()
+            p2_threshold = np.random.random()
+            p3_threshold = np.random.random()
 
             # rule 1 - becoming infected
             Infected_N = Infected_neighbors((i,j), lattice, N)
@@ -131,7 +150,8 @@ def update_SIRS(N, p, lattice):
             if (cell == 1 and p3 > p3_threshold): lattice[i,j] = 0
 
 
-        if(n%10==0 and n>100):
+
+        if(n%10==0):
 
             # count the number of infected states
             infected_MatTrue = lattice[lattice==-1]
@@ -144,10 +164,10 @@ def update_SIRS(N, p, lattice):
             data.write('{0:5.5e}\n'.format(Num_infected_sites))
 
             # animates spin configuration 
-            # plt.cla()
-            # im=plt.imshow(lattice, animated=True)
-            # plt.draw()
-            # plt.pause(0.0001) 
+            plt.cla()
+            im=plt.imshow(lattice, animated=True, cmap=cmap, vmin=vmin, vmax=vmax)
+            plt.draw()
+            plt.pause(0.0001) 
 
     data.close()
 

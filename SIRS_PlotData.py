@@ -31,13 +31,13 @@ def BootstrapError(infected_sites):
     for i in range(Nsplit):
 
         # generating random indices to sample subsets
-        sample_idx = np.random.randint(0, data_size, size=(int(data_size/Nsplit)))
+        sample_idx = np.random.randint(0, data_size, size=Nsplit)
 
         # calculating energy and magnetism subsets
         infected_subset = infected_sites[sample_idx]
 
         # calculating heat capacity and susceptability from subset data
-        var_infected = np.var(infected_subset)/len(infected_subset)
+        var_infected = np.var(infected_subset)/(50*50)
 
         # adding calculated subset data to list
         infected_samples.append(var_infected)
@@ -101,7 +101,7 @@ def main():
 
         # calculates average energy and magnetism
         aver_Infected = np.mean(Infected_sites)
-        var_Infected = np.var(Infected_sites)/len(Infected_sites)
+        var_Infected = np.var(Infected_sites)/(50*50)
 
         # calculating errors
         infected_var_err = BootstrapError(infected_sites)
@@ -129,6 +129,7 @@ def main():
     # ax[0,0].errorbar(tot_kT, tot_sus, marker='o', markersize = 4, linestyle='--', yerr=tot_suscept_err, color='black', capsize=3)
     # ax[0,0].set_xlabel('kT [K]')
     # ax[0,0].set_ylabel('$\chi(M)$ [-]')
+    
 
 
 main()

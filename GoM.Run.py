@@ -12,7 +12,7 @@ A full explanation of the parameters can be found in the README.txt file
 """
 
 
-import GameOfLife_functions as gom
+import GoM_Functions as gom
 import numpy as np
 import time
 import sys
