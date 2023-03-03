@@ -86,20 +86,20 @@ def update_Game(N, condition, lattice, Run):
     new_lattice = lattice.copy()
 
     # setting up animantion figure
-    fig = plt.figure()
-    im=plt.imshow(new_lattice, animated=True)
+    # fig = plt.figure()
+    # im=plt.imshow(new_lattice, animated=True)
 
     # number of sweeps for simulation
-    nstep=200
+    nstep=12500
 
     # sweeps counter
     sweeps = 0
 
-    outFilePath = os.getcwd() + f'/GoM_Data/{condition}/{condition}Dynamics_{N}N_Run{Run}.dat'
+    outFilePath = os.getcwd() + f'/GoM_Data/{condition}/{N}N_{condition}Dynamics_GoMRun{Run}.dat'
     data=open( outFilePath,'w')
 
     start_time= datetime.datetime.now()
-
+    counter=0
     for n in range(nstep):
         xcm_top = 0
         ycm_top = 0
@@ -142,21 +142,33 @@ def update_Game(N, condition, lattice, Run):
                 xcm_top += (i * cell )
                 ycm_top += (j * cell )
 
+
+
+        active_site1 = np.sum(lattice)
+        active_site2 = np.sum(new_lattice)
+            
+        # stops simulation if number of active counts are the same for 10 counts, i.e. equlibrium
+        if (condition=='Random'):
+            if (active_site1==active_site2): 
+                counter+=1
+            else:
+                counter=0
+            if(counter>=10):
+                print('Simulation Converged Early')
+                break
+
         lattice = new_lattice.copy()
 
-        if(n%5==0): 
+        if(n%10==0 and n>500): 
 
             # prints current number of sweep to terminal
-            sweeps +=1
+            sweeps +=10
             print(f'sweeps={sweeps}', end='\r')
 
 
-            # writes new spin configuration energy and magnetism data to file 
-            measurement_time = datetime.datetime.now()
-            total_time = (measurement_time - start_time).total_seconds()
-
             # calculating number of active sites
             active_sites = np.sum(lattice)
+        
 
             # storing center of mass data if glider simulation
             if (condition=='glider'):
@@ -171,11 +183,12 @@ def update_Game(N, condition, lattice, Run):
             else:
                 data.write('{0:5.5e} {1:5.5e}\n'.format(n, active_sites))
 
+
             # animates spin configuration 
-            plt.cla()
-            im=plt.imshow(lattice, animated=True)
-            plt.draw()
-            plt.pause(0.0001) 
+            # plt.cla()
+            # im=plt.imshow(lattice, animated=True)
+            # plt.draw()
+            # plt.pause(0.0001) 
 
 
     data.close()

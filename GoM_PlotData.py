@@ -28,21 +28,24 @@ def plotHist():
         equilibrium_time = rawData[:,0]
         active_sites = rawData[:,1]
 
-        counter = 0
-        # find equilibrium_time using counter
-        for i in range(len(active_sites)):
+        # already check in simulation if last data points converge with counter
+        hist_data.append(equilibrium_time[-1])
 
-            active_site1 = active_sites[i]
-            active_site2 = active_sites[i+1]
+        # counter = 0
+        # # find equilibrium_time using counter
+        # for i in range(len(active_sites)):
+
+        #     active_site1 = active_sites[i]
+        #     active_site2 = active_sites[i+1]
             
-            if (active_site1==active_site2): 
-                counter+=1
-            else:
-                counter=0
+        #     if (active_site1==active_site2): 
+        #         counter+=1
+        #     else:
+        #         counter=0
 
-            if(counter>=10):
-                hist_data.append(equilibrium_time[i])
-                break
+        #     if(counter>=10):
+        #         hist_data.append(equilibrium_time[i])
+        #         break
 
 
     fig, ax = plt.subplots(1, 1, figsize=(6, 5))

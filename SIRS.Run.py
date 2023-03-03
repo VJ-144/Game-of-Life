@@ -30,8 +30,9 @@ def main():
     if (BatchRun=='True'):
 
         p2 = 0.5
-        p1_list = np.linspace(0, 1, 101)
-        p3_list = np.linspace(0, 1, 101)
+        p1_list = np.linspace(0, 1, 21)
+        p3_list = np.linspace(0, 1, 21)
+
 
         for i, p1 in enumerate(p1_list):
                 for j, p3 in enumerate(p1_list):

@@ -87,41 +87,35 @@ def update_SIRS(N, p, lattice, imm_percent):
         imm_x = np.random.choice(N, imm_size)
         imm_y = np.random.choice(N, imm_size)
         lattice[imm_x, imm_y] = -2
-        cmap = ListedColormap(['r', 'limegreen', 'yellow', 'dodgerblue'])
+        cmap = ListedColormap(['orange', 'red', 'yellow', 'dodgerblue'])
         vmin = -2
         vmax = 1
     else:
-        cmap = ListedColormap(['limegreen', 'yellow', 'dodgerblue'])
+        cmap = ListedColormap(['red', 'yellow', 'dodgerblue'])
         vmin = -1
         vmax = 1
 
 
     # setting up animantion figure
-    fig = plt.figure()
-    im=plt.imshow(lattice, animated=True, cmap=cmap, vmin=vmin, vmax=vmax)
-    fig.colorbar(im)
+    # fig = plt.figure()
+    # im=plt.imshow(lattice, animated=True, cmap=cmap, vmin=vmin, vmax=vmax)
+    # fig.colorbar(im)
 
     # number of sweeps for simulation
-    nstep=10100
+    nstep=12500
 
     # sweeps counter
     sweeps = 0
 
-
-    outFilePath = os.getcwd() + f'/SIRS_Data/SIRS_{N}N_P1-{p1}_P2-{p2}_P3-{p3}.dat'
+    outFilePath = os.getcwd() + f'/SIRS_Data/{N}N_P1-{p1}_P2-{p2}_P3-{p3}_SIRS.dat'
     data=open( outFilePath,'w')
+    new_lattice = lattice.copy()
 
-
-    start_time= datetime.datetime.now()
-
+    counter=0
     for n in range(nstep):
 
         i_list, j_list = GenerateRandom_Idx(N)
-
-        # p1_threshold = random.random()
-        # p2_threshold = random.random()
-        # p3_threshold = random.random()   
-
+    
         for k in itertools.product(range(N*N)):
 
             i = i_list[k]
@@ -149,25 +143,38 @@ def update_SIRS(N, p, lattice, imm_percent):
             # rule 3 - becoming susceptabile
             if (cell == 1 and p3 > p3_threshold): lattice[i,j] = 0
 
+        # count the number of infected states
+        # stops simulation if number of active counts are the same for 10 counts, i.e. equlibrium
+        infected_MatTrue1 = lattice[lattice==-1]
+        Num_infected_sites1 = np.count_nonzero(infected_MatTrue1) 
+
+        infected_MatTrue2 = new_lattice[new_lattice==-1]
+        Num_infected_sites2 = np.count_nonzero(infected_MatTrue2)  
 
 
-        if(n%10==0):
+        if (Num_infected_sites1==Num_infected_sites2): 
+            counter+=1
+        else:
+            counter=0
+        if(counter>=10):
+            print('Simulation Converged Early')
+            break
 
-            # count the number of infected states
-            infected_MatTrue = lattice[lattice==-1]
-            Num_infected_sites = np.count_nonzero(infected_MatTrue)             
+
+        new_lattice = lattice.copy()
+        if(n%10==0 and n>500):      
 
             # prints current number of sweep to terminal
             sweeps +=10
             print(f'sweeps={sweeps}', end='\r')
 
-            data.write('{0:5.5e}\n'.format(Num_infected_sites))
+            data.write('{0:5.5e}\n'.format(Num_infected_sites1))
 
             # animates spin configuration 
-            plt.cla()
-            im=plt.imshow(lattice, animated=True, cmap=cmap, vmin=vmin, vmax=vmax)
-            plt.draw()
-            plt.pause(0.0001) 
+            # plt.cla()
+            # im=plt.imshow(lattice, animated=True, cmap=cmap, vmin=vmin, vmax=vmax)
+            # plt.draw()
+            # plt.pause(0.0001) 
 
     data.close()
 
