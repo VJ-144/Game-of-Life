@@ -159,7 +159,7 @@ def update_Game(N, condition, lattice, Run):
 
         lattice = new_lattice.copy()
 
-        if(n%10==0 and n>500): 
+        if(n%10==0): 
 
             # prints current number of sweep to terminal
             sweeps +=10
