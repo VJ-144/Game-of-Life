@@ -97,9 +97,9 @@ def update_SIRS(N, p, lattice, imm_percent):
 
 
     # setting up animantion figure
-    fig = plt.figure()
-    im=plt.imshow(lattice, animated=True, cmap=cmap, vmin=vmin, vmax=vmax)
-    fig.colorbar(im)
+    # fig = plt.figure()
+    # im=plt.imshow(lattice, animated=True, cmap=cmap, vmin=vmin, vmax=vmax)
+    # fig.colorbar(im)
 
     # number of sweeps for simulation
     nstep=12100
@@ -172,10 +172,10 @@ def update_SIRS(N, p, lattice, imm_percent):
             data.write('{0:5.5e}\n'.format(Num_infected_sites1))
 
             # animates spin configuration 
-            plt.cla()
-            im=plt.imshow(lattice, animated=True, cmap=cmap, vmin=vmin, vmax=vmax)
-            plt.draw()
-            plt.pause(0.0001) 
+            # plt.cla()
+            # im=plt.imshow(lattice, animated=True, cmap=cmap, vmin=vmin, vmax=vmax)
+            # plt.draw()
+            # plt.pause(0.0001) 
 
     data.close()
 
