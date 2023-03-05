@@ -28,32 +28,18 @@ def plotHist():
         equilibrium_time = rawData[:,0]
         active_sites = rawData[:,1]
 
+        # manually check if data has converged, prints filename if not
+        # if (len(equilibrium_time)==1200): print(filename)
+
         # already check in simulation if last data points converge with counter
         hist_data.append(equilibrium_time[-1])
-
-        # counter = 0
-        # # find equilibrium_time using counter
-        # for i in range(len(active_sites)):
-
-        #     active_site1 = active_sites[i]
-        #     active_site2 = active_sites[i+1]
-            
-        #     if (active_site1==active_site2): 
-        #         counter+=1
-        #     else:
-        #         counter=0
-
-        #     if(counter>=10):
-        #         hist_data.append(equilibrium_time[i])
-        #         break
-
 
     fig, ax = plt.subplots(1, 1, figsize=(6, 5))
 
     # plotting histogram
     ax.set_title('Absorbing States Equlibrium Time Histogram', pad=16)
-    ax.hist(hist_data, bins=20, density=True)
-    ax.set_xlabel('Time [s]')
+    ax.hist(hist_data, bins=30, density=True)
+    ax.set_xlabel('Sweeps [-]')
     ax.set_ylabel('Proability [%]')
     plt.show()
 
@@ -135,8 +121,8 @@ def COM_velocity():
 
 def main():
     # SingleEquilibrium()
-    # plotHist()
-    COM_velocity()
+    plotHist()
+    # COM_velocity()
     return 0
 
 main()
