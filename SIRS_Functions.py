@@ -156,6 +156,7 @@ def update_SIRS(N, p, lattice, imm_percent):
             counter+=1
         else:
             counter=0
+        # print(counter)
         if(counter>=20):
             if (n<100): data.write('{0:5.5e} {1:5.5e} {2:5.5e} {3:5.5e}\n'.format(p1, p2, p3, Num_infected_sites1))  # sets output if system converges within 100 sweeps as no data is yet taken
             print('Simulation Converged Early')

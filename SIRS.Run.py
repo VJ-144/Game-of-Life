@@ -33,6 +33,10 @@ def main():
         p1_list = np.linspace(0, 1, 21)
         p3_list = np.linspace(0, 1, 21)
 
+        # p1_list = np.linspace(0.5, 1, 11)
+        # p3_list = np.linspace(0.5, 1, 11)
+        # print(p1_list)
+
 
         for i, p1 in enumerate(p1_list):
                 for j, p3 in enumerate(p1_list):
@@ -41,9 +45,10 @@ def main():
                     p3 = np.round(p3, 2)
                     
                     p_new = (p1, p2, p3)
-                    new_lattice = SIRS.update_SIRS(N, p_new, lattice, immune)
+                    print(p_new)
+                    SIRS.update_SIRS(N, p_new, lattice, immune)
                     print(f'completed @ P1-{p1} P2-{p2} P3-{p3}')
-                    lattice = new_lattice
+                    # lattice = new_lattice
 
     elif (BatchRun=='False'):
         SIRS.update_SIRS(N, p, lattice, immune)
