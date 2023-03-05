@@ -90,7 +90,7 @@ def update_Game(N, condition, lattice, Run):
     # im=plt.imshow(new_lattice, animated=True)
 
     # number of sweeps for simulation
-    nstep=12500
+    nstep=12000
 
     # sweeps counter
     sweeps = 0
@@ -153,7 +153,7 @@ def update_Game(N, condition, lattice, Run):
                 counter+=1
             else:
                 counter=0
-            if(counter>=10):
+            if(counter>20):
                 print('Simulation Converged Early')
                 break
 

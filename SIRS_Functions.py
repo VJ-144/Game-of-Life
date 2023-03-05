@@ -97,17 +97,17 @@ def update_SIRS(N, p, lattice, imm_percent):
 
 
     # setting up animantion figure
-    # fig = plt.figure()
-    # im=plt.imshow(lattice, animated=True, cmap=cmap, vmin=vmin, vmax=vmax)
-    # fig.colorbar(im)
+    fig = plt.figure()
+    im=plt.imshow(lattice, animated=True, cmap=cmap, vmin=vmin, vmax=vmax)
+    fig.colorbar(im)
 
     # number of sweeps for simulation
-    nstep=12500
+    nstep=12100
 
     # sweeps counter
     sweeps = 0
 
-    outFilePath = os.getcwd() + f'/SIRS_Data/{N}N_P1-{p1}_P2-{p2}_P3-{p3}_SIRS.dat'
+    outFilePath = os.getcwd() + f'/SIRS_Data/{N}N_P1-{p1}_P2-{p2}_P3-{p3}_Im-{imm_percent}_SIRS.dat'
     data=open( outFilePath,'w')
     new_lattice = lattice.copy()
 
@@ -156,13 +156,14 @@ def update_SIRS(N, p, lattice, imm_percent):
             counter+=1
         else:
             counter=0
-        if(counter>=10):
+        if(counter>=20):
+            if (n<100): data.write('{0:5.5e}\n'.format(Num_infected_sites1))  # sets output if system converges within 100 sweeps as no data is yet taken
             print('Simulation Converged Early')
             break
 
 
         new_lattice = lattice.copy()
-        if(n%10==0 and n>500):      
+        if(n%10==0 and n>=100):      
 
             # prints current number of sweep to terminal
             sweeps +=10
@@ -171,10 +172,10 @@ def update_SIRS(N, p, lattice, imm_percent):
             data.write('{0:5.5e}\n'.format(Num_infected_sites1))
 
             # animates spin configuration 
-            # plt.cla()
-            # im=plt.imshow(lattice, animated=True, cmap=cmap, vmin=vmin, vmax=vmax)
-            # plt.draw()
-            # plt.pause(0.0001) 
+            plt.cla()
+            im=plt.imshow(lattice, animated=True, cmap=cmap, vmin=vmin, vmax=vmax)
+            plt.draw()
+            plt.pause(0.0001) 
 
     data.close()
 

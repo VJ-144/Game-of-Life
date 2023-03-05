@@ -90,7 +90,7 @@ def line(m, x, c):
 def COM_velocity():
 
 
-    filename = 'gliderDynamics_50N_Run0.dat'
+    filename = '50N_gliderDynamics_GoMRun0.dat'
     condition = f'glider'
 
     pathToFile = os.getcwd() + f'/GoM_Data/{condition}/'
@@ -124,7 +124,7 @@ def COM_velocity():
     ax[1].set_title('Y-Component', pad=10)
     ax[1].errorbar(time, ycm, marker='o', markersize = 3, linestyle='', color='black', label='Glider COM')
     ax[1].errorbar(xx[20:80], line(xx[20:80], my, cy), linestyle='-', color='r', label=f'Gradient={np.round(my,2)}\nY-Intercept={np.round(cy,2)}')
-    ax[1].set_xlabel('Sweeps [s]')
+    ax[1].set_xlabel('Sweeps [-]')
     ax[1].set_ylabel('Center of Mass [-]')
     ax[1].legend(loc=2, prop={'size': 6})
 
@@ -134,9 +134,9 @@ def COM_velocity():
 
 
 def main():
-    SingleEquilibrium()
+    # SingleEquilibrium()
     # plotHist()
-    # COM_velocity()
+    COM_velocity()
     return 0
 
 main()
