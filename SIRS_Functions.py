@@ -147,6 +147,13 @@ def update_SIRS(N, p, lattice, imm_percent):
         infected_MatTrue1 = lattice[lattice==-1]
         Num_infected_sites1 = np.count_nonzero(infected_MatTrue1) 
 
+        # Num_infected_sites1 = np.count_nonzero(lattice == -1)
+        # Num_infected_sites2 = np.count_nonzero(new_lattice == -1)
+        # print(Num_infected_sites1)
+        # print(lattice)
+        # break
+
+
         infected_MatTrue2 = new_lattice[new_lattice==-1]
         Num_infected_sites2 = np.count_nonzero(infected_MatTrue2)  
 
@@ -182,8 +189,10 @@ def update_SIRS(N, p, lattice, imm_percent):
             # print(counter)
             if(counter>=10):
                 print('Simulation Converged Early')
+                # print(infected_sites)
                 averge_infected = np.mean(infected_sites)
                 varience_infected = np.var(infected_sites)
+                print(averge_infected)
                 return averge_infected, varience_infected
 
             # animates spin configuration 
@@ -196,4 +205,5 @@ def update_SIRS(N, p, lattice, imm_percent):
     varience_infected = np.var(infected_sites)
 
     # returns updated spin matrix after 10100 sweeps
+    print(averge_infected)
     return averge_infected, varience_infected

@@ -31,27 +31,33 @@ def main():
     if (BatchRun=='True'):
 
         p2 = 0.5
-        p1_list = np.linspace(0, 1, 21)
-        p3_list = np.linspace(0, 1, 21)
+        # p1_list = np.linspace(0, 1, 21)
+        # p3_list = np.linspace(0, 1, 21)
 
-        # p1_list = np.linspace(0.5, 1, 11)
-        # p3_list = np.linspace(0.5, 1, 11)
+        p1_list = np.linspace(0.5, 1, 11)
+        p3_list = np.linspace(0.5, 1, 11)
         # print(p1_list)
 
 
         mat = np.zeros((len(p1_list), len(p3_list)) )
 
         data2=open( 'SIRS_Model_Varience','w')
-        for i, p1 in enumerate(p1_list):
-                for j, p3 in enumerate(p1_list):
+        for i in range(len(p1_list)):
+                for j in range(len(p1_list)):
 
-                    p1 = np.round(p1, 2)
-                    p3 = np.round(p3, 2)
+                    p1 = p1_list[i]
+                    p3 = p3_list[j]
+
+                    # p1 = np.round(p1, 2)
+                    # p3 = np.round(p3, 2)
                     
                     p_new = (p1, p2, p3)
+                    # print(p_new)
                     averageInfected, varience_infected = SIRS.update_SIRS(N, p_new, lattice, immune)
-                    mat[i,j] = averageInfected  
+                    # print(averageInfected)
+                    mat[i,j] += averageInfected 
                     print(f'completed @ P1-{p1} P2-{p2} P3-{p3}\n')
+                    # print(mat)
 
                     data2.write('{0:5.5e} {1:5.5e} {2:5.5e} {3:5.5e} {4:5.5e}\n'.format(p1, p2, p3, immune, averageInfected, varience_infected))
                     
@@ -68,7 +74,7 @@ def main():
 
 
     elif (BatchRun=='False'):
-        SIRS.update_SIRS(N, p, lattice, immune)
+        print(SIRS.update_SIRS(N, p, lattice, immune))
 
 
 main()
