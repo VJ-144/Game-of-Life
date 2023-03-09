@@ -181,6 +181,11 @@ def update_SIRS(N, p, lattice, imm_percent):
             print(f'sweeps={sweeps}', end='\r')
             infected_sites.append(Num_infected_sites1)
 
+            # infected_MatTrue1 = lattice[lattice==-1]
+            # Num_infected_sites1 = np.count_nonzero(infected_MatTrue1) 
+            
+            # infected_MatTrue2 = new_lattice[new_lattice==-1]
+            # Num_infected_sites2 = np.count_nonzero(infected_MatTrue2)  
 
             if (Num_infected_sites1==Num_infected_sites2): 
                 counter+=1

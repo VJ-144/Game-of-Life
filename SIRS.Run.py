@@ -38,8 +38,10 @@ def main():
         # p3_list = np.linspace(0.5, 1, 11)
         # print(p1_list)
 
+        new_lattice = lattice.copy()
 
-        mat = np.zeros((len(p1_list), len(p3_list)) )
+
+        mat = np.zeros([len(p1_list), len(p3_list)])
 
         data2=open( 'SIRS_Model_Varience','w')
         for i in range(len(p1_list)):
@@ -51,15 +53,19 @@ def main():
                     # p1 = np.round(p1, 2)
                     # p3 = np.round(p3, 2)
                     
+                    
                     p_new = (p1, p2, p3)
+                    # print(new_lattice)
+
                     # print(p_new)
-                    averageInfected, varience_infected = SIRS.update_SIRS(N, p_new, lattice, immune)
+                    averageInfected, varience_infected = SIRS.update_SIRS(N, p_new, new_lattice, immune)
+                    new_lattice = lattice.copy()
                     # print(averageInfected)
                     mat[i,j] += averageInfected 
                     print(f'completed @ P1-{p1} P2-{p2} P3-{p3}\n')
-                    print(mat)
+                    # print(mat)
 
-                    data2.write('{0:5.5e} {1:5.5e} {2:5.5e} {3:5.5e} {4:5.5e}\n'.format(p1, p2, p3, immune, averageInfected, varience_infected))
+                    data2.write('{0:5.5e} {1:5.5e} {2:5.5e} {3:5.5e} {4:5.5e} {5:5.5e}\n'.format(p1, p2, p3, immune, averageInfected, varience_infected))
                     
                     # observables = np.array([p1, p2, p3, immune, averageInfected, varience_infected])
                     # df2 = pd.DataFrame(data=observables.astype(float))
@@ -70,7 +76,7 @@ def main():
 
 
         df = pd.DataFrame(data=mat.astype(float))
-        df.to_csv('SIRS_Proability_Matrix', sep=' ', header=False, float_format='%.2f', index=False)
+        df.to_csv(f'SIRS_Proability_Matrix_Immune{immune}', sep=' ', header=False, float_format='%.2f', index=False)
 
 
     elif (BatchRun=='False'):

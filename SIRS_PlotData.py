@@ -4,7 +4,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-def BootstrapError(infected_sites):
+def BootstrapError(infected_sites, N):
     """
     Calculates the errors for the specific heat capacity and susceptability using the 
     bootstrap method
@@ -37,7 +37,7 @@ def BootstrapError(infected_sites):
         infected_subset = infected_sites[sample_idx]
 
         # calculating heat capacity and susceptability from subset data
-        var_infected = np.var(infected_subset)/(50*50)
+        var_infected = np.var(infected_subset)/(N**2)
 
         # adding calculated subset data to list
         infected_samples.append(var_infected)
@@ -48,80 +48,44 @@ def BootstrapError(infected_sites):
     # returning errors for heat capacity and susceptability
     return infected_var_err
 
-def plotContour(All_p1, All_p3, All_infected_avergs, err_infected_avergs):
+def plotContour(SIRS_matrix, N):
 
     fig, ax = plt.subplots(1, 1, figsize=(7, 5))
 
-    # ax.title('Average Infected Sites', pad=10)
-    ax.imshow(All_infected_avergs)
-    # axxlabel('Proability of Infection p2 [%]')
-    # axylabel('Proability of Infection p3 [%]')
+    ax.set_title(f'Average Infected Sites for {N}x{N} Matrix', pad=10)
+    ax.set_xlabel('Proability of Infection p3 [%]')
+    ax.set_ylabel('Proability of Infection p1 [%]')
+    ax.imshow(SIRS_matrix/(N**2))
     plt.show()
 
     return 0
 
-def plotVar(All_p1, All_infected_var, err_infected_var):
+def plotVar(AllData, N):
+
+
+    All_infected_var = AllData[:,5]
+    All_p1 = np.linspace(0, 1, 21)
 
     fig, ax = plt.subplots(1, 1, figsize=(7, 5))
 
     ax.set_title('Infected Sites Varience', pad=10)
-    ax.errorbar(All_p1, All_infected_var, yerr=err_infected_var, marker='o', markersize = 4, linestyle='--', color='black', capsize=3)
-    ax.xlabel('Proability of Infection [%]')
-    ax.ylabel('Varience of Infection [-]')
+    ax.errorbar(All_p1, All_infected_var/(N**2), marker='o', markersize = 4, linestyle='--', color='black', capsize=3)  # , yerr=err_infected_var  taking this out as errors are not yet calculated
+    ax.set_ylabel('Proability of Infection [%]')
+    ax.set_xlabel('Varience of Infection [-]')
+    plt.show()
 
 
 
 
 def main():
-    # reads data from directory with raw data of 50x50 spin configuration previously simulated
-    pathToFile = os.getcwd() + f'/SIRS_Data/'
-    directory = os.fsencode(pathToFile)
+ 
+    AllData = np.loadtxt('SIRS_Model_Varience_20N.txt')
+    SIRS_matrix = np.loadtxt('SIRS_Proability_Matrix_20N.txt')
 
-    All_infected_avergs = []
-    All_infected_var = []
-    All_p1 = []
-    All_p3 = []
+    N = 20
 
-    err_infected_avergs = []
-    err_infected_var = []
-
-    # loops over data files in the Raw_Submission_Results directory to read results (1 loop == 1 kT simulation)
-    for file in os.listdir(directory):
-
-        # finds the path to data files
-        filename = os.fsdecode(file)
-        directory = os.fsdecode(directory)
-        path = os.path.join(directory, filename)
-
-        # p1 = float(filename[20:23])
-        # p3 = float(filename[27:30])
-
-        # reads in stored energy and magnetism data from file
-        rawData = np.loadtxt(path)
-        Infected_sites = rawData[3]
-        p1 = rawData[0]
-        # p2 = rawData[:,1]
-        p3 = rawData[2]
-
-        # calculates average energy and magnetism
-        aver_Infected = np.mean(Infected_sites)
-        var_Infected = np.var(Infected_sites)/(50*50)
-
-        # calculating errors
-        # infected_var_err = BootstrapError(Infected_sites)
-        # infected_averg_err = np.std(Infected_sites)
-
-        # averaged data per simulation
-        All_p1.append(p1)
-        All_p3.append(p3)
-        All_infected_avergs.append(aver_Infected)
-        # All_infected_var.append(var_Infected)
-
-        # average errors per simulation
-        # err_infected_avergs.append(infected_averg_err)
-        # err_infected_var.append(infected_var_err)
-
-    plotContour(All_p1, All_p3, All_infected_avergs, err_infected_avergs)
+    plotContour(SIRS_matrix, N)
+    plotVar(AllData, N)
 
     # fig, ax = plt.subplots(2, 2, figsize=(7, 5))
 
