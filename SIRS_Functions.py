@@ -21,6 +21,58 @@ import matplotlib.animation as animation
 from matplotlib.colors import ListedColormap
 
 
+def BootstrapError(infected_sites, N):
+    """
+    Calculates the errors for the specific heat capacity and susceptability using the 
+    bootstrap method
+
+    Parameters:
+    energy (1D array) - All simulated energy data for a specified temperature kT per 10 sweeps when sweeps>100
+    mag (1D array) - All simulated magnetism data for a specified temperature kT per 10 sweeps when sweeps>100
+    N (int) - length of one axis of the spin matrix configuration
+    kT (float) - initialised temperature of the simulation
+
+    Returns:
+    h_capa_err (float) - Error on the heat capacity run at the specified temperature kT
+    suscept_err (float) - Error on the susceptability run at the specified temperature kT
+    """
+    
+    # number of groups the data will be split into for sampling
+    Nsplit = 10
+    data_size = len(infected_sites)
+    infected_sites = np.asarray(infected_sites)
+    # list to store sampled heat capacities and suseptabilites
+    infected_samples = []
+
+    # looping over number of groups
+    for i in range(Nsplit):
+
+        # generating random indices to sample subsets
+        sample_idx = np.random.randint(low=0, high=data_size-1, size=data_size, dtype=int)
+        
+
+        # if (np.sum(infected_sites)==0 or np.sum(infected_sites)==1): return 0
+
+        # print(len(sample_idx))
+        # print(len(infected_sites))
+        # print(sample_idx)
+        # print(infected_sites)
+
+        infected_subset = infected_sites[sample_idx]
+        
+        # calculating heat capacity and susceptability from subset data
+        var_infected = np.var(infected_subset)/(N**2)
+
+        # adding calculated subset data to list
+        infected_samples.append(var_infected)
+
+    # taking standard deviation of sampled heat capacity and susceptability calculated from subsets
+    infected_var_err = np.std(infected_samples)
+
+    # returning errors for heat capacity and susceptability
+    return infected_var_err
+
+
 def Infected_neighbors(idx, lattice, N):
 
     i, j = idx
@@ -102,9 +154,7 @@ def update_SIRS(N, p, lattice, imm_percent):
     # fig.colorbar(im)
 
     # number of sweeps for simulation
-    nstep=1100
-
-    # sweeps counter
+    nstep=10100
     sweeps = 0
 
     new_lattice = lattice.copy()
@@ -147,58 +197,33 @@ def update_SIRS(N, p, lattice, imm_percent):
         infected_MatTrue1 = lattice[lattice==-1]
         Num_infected_sites1 = np.count_nonzero(infected_MatTrue1) 
 
-        # Num_infected_sites1 = np.count_nonzero(lattice == -1)
-        # Num_infected_sites2 = np.count_nonzero(new_lattice == -1)
-        # print(Num_infected_sites1)
-        # print(lattice)
-        # break
-
-
         infected_MatTrue2 = new_lattice[new_lattice==-1]
         Num_infected_sites2 = np.count_nonzero(infected_MatTrue2)  
 
-
-        # if (Num_infected_sites1==Num_infected_sites2): 
-        #     counter+=1
-        # else:
-        #     counter=0
-        # # print(counter)
-        # # equkivalent to 10 n%10 meareuments being the same
-        # if(counter>=10*10):
-        #     # if (n<100): return 0, 0  # sets output if system converges within 100 sweeps as no data is yet taken
-        #     print('Simulation Converged Early')
-        #     averge_infected = np.mean(infected_sites)
-        #     varience_infected = np.var(infected_sites)
-        #     return averge_infected, varience_infected
-
-            # return Num_infected_sites1
-
         new_lattice = lattice.copy()
+
         if(n%10==0 and n>100):      
 
             # prints current number of sweep to terminal
             sweeps +=10
             print(f'sweeps={sweeps}', end='\r')
-            infected_sites.append(Num_infected_sites1)
 
-            # infected_MatTrue1 = lattice[lattice==-1]
-            # Num_infected_sites1 = np.count_nonzero(infected_MatTrue1) 
-            
-            # infected_MatTrue2 = new_lattice[new_lattice==-1]
-            # Num_infected_sites2 = np.count_nonzero(infected_MatTrue2)  
+            infected_sites.append(Num_infected_sites1)
 
             if (Num_infected_sites1==Num_infected_sites2): 
                 counter+=1
             else:
                 counter=0
-            # print(counter)
+
             if(counter>=10):
-                print('Simulation Converged Early')
-                # print(infected_sites)
                 averge_infected = np.mean(infected_sites)
                 varience_infected = np.var(infected_sites)
-                print(averge_infected)
-                return averge_infected, varience_infected
+                var_err = BootstrapError(infected_sites, N)
+
+                print('Simulation Converged Early')
+                print(f'Avg. Number of Infected Sites = {averge_infected}')
+
+                return averge_infected, varience_infected, var_err
 
             # animates spin configuration 
             # plt.cla()
@@ -208,7 +233,8 @@ def update_SIRS(N, p, lattice, imm_percent):
 
     averge_infected = np.mean(infected_sites)
     varience_infected = np.var(infected_sites)
+    var_err = BootstrapError(infected_sites, N)
 
-    # returns updated spin matrix after 10100 sweeps
-    print(averge_infected)
-    return averge_infected, varience_infected
+
+    print(f'Avg. Number of Infected Sites = {averge_infected}')
+    return averge_infected, varience_infected, var_err
