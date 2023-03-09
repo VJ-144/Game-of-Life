@@ -97,19 +97,18 @@ def update_SIRS(N, p, lattice, imm_percent):
 
 
     # setting up animantion figure
-    # fig = plt.figure()
-    # im=plt.imshow(lattice, animated=True, cmap=cmap, vmin=vmin, vmax=vmax)
-    # fig.colorbar(im)
+    fig = plt.figure()
+    im=plt.imshow(lattice, animated=True, cmap=cmap, vmin=vmin, vmax=vmax)
+    fig.colorbar(im)
 
     # number of sweeps for simulation
-    nstep=12100
+    nstep=1100
 
     # sweeps counter
     sweeps = 0
 
-    outFilePath = os.getcwd() + f'/SIRS_Data/{N}N_P1-{p1}_P2-{p2}_P3-{p3}_Im-{imm_percent}_SIRS.dat'
-    data=open( outFilePath,'w')
     new_lattice = lattice.copy()
+    infected_sites=[]
 
     counter=0
     for n in range(nstep):
@@ -134,14 +133,14 @@ def update_SIRS(N, p, lattice, imm_percent):
 
             # rule 1 - becoming infected
             Infected_N = Infected_neighbors((i,j), lattice, N)
-            if (cell == 0 and p1 > p1_threshold):
-                if (Infected_N): lattice[i,j] = -1
+            if (cell == 0 and Infected_N):
+                if (p1 > p1_threshold): lattice[i,j] = -1
 
             # rule 2 - becoming recovered
             if (cell == -1 and p2 > p2_threshold): lattice[i,j] = 1
 
             # rule 3 - becoming susceptabile
-            if (cell == 1 and p3 > p3_threshold): lattice[i,j] = 0
+            if (cell == 1 and p3 > p2_threshold): lattice[i,j] = 0
 
         # count the number of infected states
         # stops simulation if number of active counts are the same for 10 counts, i.e. equlibrium
@@ -152,33 +151,49 @@ def update_SIRS(N, p, lattice, imm_percent):
         Num_infected_sites2 = np.count_nonzero(infected_MatTrue2)  
 
 
-        if (Num_infected_sites1==Num_infected_sites2): 
-            counter+=1
-        else:
-            counter=0
-        # print(counter)
-        if(counter>=20):
-            if (n<100): data.write('{0:5.5e} {1:5.5e} {2:5.5e} {3:5.5e}\n'.format(p1, p2, p3, Num_infected_sites1))  # sets output if system converges within 100 sweeps as no data is yet taken
-            print('Simulation Converged Early')
-            break
+        # if (Num_infected_sites1==Num_infected_sites2): 
+        #     counter+=1
+        # else:
+        #     counter=0
+        # # print(counter)
+        # # equkivalent to 10 n%10 meareuments being the same
+        # if(counter>=10*10):
+        #     # if (n<100): return 0, 0  # sets output if system converges within 100 sweeps as no data is yet taken
+        #     print('Simulation Converged Early')
+        #     averge_infected = np.mean(infected_sites)
+        #     varience_infected = np.var(infected_sites)
+        #     return averge_infected, varience_infected
 
+            # return Num_infected_sites1
 
         new_lattice = lattice.copy()
-        if(n%10==0 and n>=100):      
+        if(n%10==0 and n>100):      
 
             # prints current number of sweep to terminal
             sweeps +=10
             print(f'sweeps={sweeps}', end='\r')
+            infected_sites.append(Num_infected_sites1)
 
-            data.write('{0:5.5e} {1:5.5e} {2:5.5e} {3:5.5e}\n'.format(p1, p2, p3, Num_infected_sites1))
+
+            if (Num_infected_sites1==Num_infected_sites2): 
+                counter+=1
+            else:
+                counter=0
+            # print(counter)
+            if(counter>=10):
+                print('Simulation Converged Early')
+                averge_infected = np.mean(infected_sites)
+                varience_infected = np.var(infected_sites)
+                return averge_infected, varience_infected
 
             # animates spin configuration 
-            # plt.cla()
-            # im=plt.imshow(lattice, animated=True, cmap=cmap, vmin=vmin, vmax=vmax)
-            # plt.draw()
-            # plt.pause(0.0001) 
+            plt.cla()
+            im=plt.imshow(lattice, animated=True, cmap=cmap, vmin=vmin, vmax=vmax)
+            plt.draw()
+            plt.pause(0.0001) 
 
-    data.close()
+    averge_infected = np.mean(infected_sites)
+    varience_infected = np.var(infected_sites)
 
     # returns updated spin matrix after 10100 sweeps
-    return lattice
+    return averge_infected, varience_infected

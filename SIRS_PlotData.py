@@ -52,10 +52,11 @@ def plotContour(All_p1, All_p3, All_infected_avergs, err_infected_avergs):
 
     fig, ax = plt.subplots(1, 1, figsize=(7, 5))
 
-    ax[0].set_title('Average Infected Sites', pad=10)
-    ax[0].contour(All_p1, All_p3, All_infected_avergs, marker='o', markersize = 4, linestyle='--', color='black', capsize=3)
-    ax[0].set_xlabel('Proability of Infection [%]')
-    ax[0].set_ylabel('Average Infection [-]')
+    # ax.title('Average Infected Sites', pad=10)
+    ax.imshow(All_infected_avergs)
+    # axxlabel('Proability of Infection p2 [%]')
+    # axylabel('Proability of Infection p3 [%]')
+    plt.show()
 
     return 0
 
@@ -63,10 +64,10 @@ def plotVar(All_p1, All_infected_var, err_infected_var):
 
     fig, ax = plt.subplots(1, 1, figsize=(7, 5))
 
-    ax[1].set_title('Infected Sites Varience', pad=10)
-    ax[1].errorbar(All_p1, All_infected_var, yerr=err_infected_var, marker='o', markersize = 4, linestyle='--', color='black', capsize=3)
-    ax[1].set_xlabel('Proability of Infection [%]')
-    ax[1].set_ylabel('Varience of Infection [-]')
+    ax.set_title('Infected Sites Varience', pad=10)
+    ax.errorbar(All_p1, All_infected_var, yerr=err_infected_var, marker='o', markersize = 4, linestyle='--', color='black', capsize=3)
+    ax.xlabel('Proability of Infection [%]')
+    ax.ylabel('Varience of Infection [-]')
 
 
 
@@ -92,31 +93,35 @@ def main():
         directory = os.fsdecode(directory)
         path = os.path.join(directory, filename)
 
-        p1 = float(filename[20:23])
-        p3 = float(filename[27:30])
+        # p1 = float(filename[20:23])
+        # p3 = float(filename[27:30])
 
         # reads in stored energy and magnetism data from file
         rawData = np.loadtxt(path)
-        Infected_sites = rawData
+        Infected_sites = rawData[3]
+        p1 = rawData[0]
+        # p2 = rawData[:,1]
+        p3 = rawData[2]
 
         # calculates average energy and magnetism
         aver_Infected = np.mean(Infected_sites)
         var_Infected = np.var(Infected_sites)/(50*50)
 
         # calculating errors
-        infected_var_err = BootstrapError(infected_sites)
-        infected_averg_err = np.std(Infected_sites)
+        # infected_var_err = BootstrapError(Infected_sites)
+        # infected_averg_err = np.std(Infected_sites)
 
         # averaged data per simulation
         All_p1.append(p1)
         All_p3.append(p3)
         All_infected_avergs.append(aver_Infected)
-        All_infected_var.append(var_Infected)
+        # All_infected_var.append(var_Infected)
 
         # average errors per simulation
-        err_infected_avergs.append(infected_averg_err)
-        err_infected_var.append(infected_var_err)
+        # err_infected_avergs.append(infected_averg_err)
+        # err_infected_var.append(infected_var_err)
 
+    plotContour(All_p1, All_p3, All_infected_avergs, err_infected_avergs)
 
     # fig, ax = plt.subplots(2, 2, figsize=(7, 5))
 

@@ -16,6 +16,7 @@ import SIRS_Functions as SIRS
 import numpy as np
 import time
 import sys
+import pandas as pd
 
 
 def main():
@@ -38,6 +39,9 @@ def main():
         # print(p1_list)
 
 
+        mat = np.zeros((len(p1_list), len(p3_list)) )
+
+        data2=open( 'SIRS_Model_Varience','w')
         for i, p1 in enumerate(p1_list):
                 for j, p3 in enumerate(p1_list):
 
@@ -45,10 +49,23 @@ def main():
                     p3 = np.round(p3, 2)
                     
                     p_new = (p1, p2, p3)
-                    print(p_new)
-                    SIRS.update_SIRS(N, p_new, lattice, immune)
-                    print(f'completed @ P1-{p1} P2-{p2} P3-{p3}')
-                    # lattice = new_lattice
+                    averageInfected, varience_infected = SIRS.update_SIRS(N, p_new, lattice, immune)
+                    mat[i,j] = averageInfected  
+                    print(f'completed @ P1-{p1} P2-{p2} P3-{p3}\n')
+
+                    data2.write('{0:5.5e} {1:5.5e} {2:5.5e} {3:5.5e} {4:5.5e}\n'.format(p1, p2, p3, immune, averageInfected, varience_infected))
+                    
+                    # observables = np.array([p1, p2, p3, immune, averageInfected, varience_infected])
+                    # df2 = pd.DataFrame(data=observables.astype(float))
+                    # df2.to_csv('SIRS_Model_Varience', sep=' ', header=False, float_format='%.5f', index=False)
+                    # ['p1', 'p2', 'p2', 'Immune Prob', 'Avg. Infected', 'Var Infected']
+
+        data2.close()
+
+
+        df = pd.DataFrame(data=mat.astype(float))
+        df.to_csv('SIRS_Proability_Matrix', sep=' ', header=False, float_format='%.2f', index=False)
+
 
     elif (BatchRun=='False'):
         SIRS.update_SIRS(N, p, lattice, immune)
