@@ -31,11 +31,11 @@ def main():
     if (BatchRun=='True'):
 
         p2 = 0.5
-        # p1_list = np.linspace(0, 1, 21)
-        # p3_list = np.linspace(0, 1, 21)
+        p1_list = np.linspace(0, 1, 21)
+        p3_list = np.linspace(0, 1, 21)
 
-        p1_list = np.linspace(0.5, 1, 11)
-        p3_list = np.linspace(0.5, 1, 11)
+        # p1_list = np.linspace(0.5, 1, 11)
+        # p3_list = np.linspace(0.5, 1, 11)
         # print(p1_list)
 
 
@@ -57,7 +57,7 @@ def main():
                     # print(averageInfected)
                     mat[i,j] += averageInfected 
                     print(f'completed @ P1-{p1} P2-{p2} P3-{p3}\n')
-                    # print(mat)
+                    print(mat)
 
                     data2.write('{0:5.5e} {1:5.5e} {2:5.5e} {3:5.5e} {4:5.5e}\n'.format(p1, p2, p3, immune, averageInfected, varience_infected))
                     
