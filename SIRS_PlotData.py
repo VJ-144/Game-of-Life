@@ -53,13 +53,13 @@ def main():
     global N
     N = 50
 
-    # SIRS_HeatMap = np.loadtxt(path + 'HeatMap\\SIRS_Proability_Matrix_VariedP1P3_Imm0.txt')
+    SIRS_HeatMap = np.loadtxt(path + 'HeatMap\\SIRS_Proability_Matrix_HeatMap.txt')
     SIRS_Wave = np.loadtxt(path + 'Variance_Wave\\SIRS_Model_TotalData_VarWave.txt')
-    # SIRS_Imm = np.loadtxt(path + 'SIRS_Proability_Matrix_VariedP1P3_Imm0.txt')
+    SIRS_Imm = np.loadtxt(path + 'Immunity\\SIRS_Model__TotalData_Immune.txt')
 
     # plotContour(SIRS_matrix, N)
-    plotWave(SIRS_Wave)
-    # plotImmune(SIRS_Imm)
+    # plotWave(SIRS_Wave)
+    plotImmune(SIRS_Imm)
     
 
 main()

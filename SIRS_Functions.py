@@ -154,7 +154,7 @@ def update_SIRS(N, p, lattice, imm_percent):
     # fig.colorbar(im)
 
     # number of sweeps for simulation
-    nstep=10100
+    nstep=10500
     sweeps = 0
 
     new_lattice = lattice.copy()
@@ -202,7 +202,7 @@ def update_SIRS(N, p, lattice, imm_percent):
 
         new_lattice = lattice.copy()
 
-        if(n%10==0 and n>100):      
+        if(n%10==0 and n>500):      
 
             # prints current number of sweep to terminal
             sweeps +=10

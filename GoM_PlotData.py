@@ -22,8 +22,6 @@ def plotHist():
         directory = os.fsdecode(directory)
         path = os.path.join(directory, filename)
 
-        # print(filename)
-        # reads in stored energy and magnetism data from file
         rawData = np.loadtxt(path)
         equilibrium_time = rawData[:,0]
         active_sites = rawData[:,1]
@@ -34,14 +32,14 @@ def plotHist():
         # already check in simulation if last data points converge with counter
         hist_data.append(equilibrium_time[-1])
 
-    fig, ax = plt.subplots(1, 1, figsize=(6, 5))
+    fig, ax = plt.subplots(1, 1, figsize=(6, 5), layout="constrained")
 
     # plotting histogram
-    ax.set_title('Absorbing States Equlibrium Time Histogram', pad=16)
-    ax.hist(hist_data, bins=30, density=True)
+    ax.set_title(f'Absorbing States Equlibrium Time {N}x{N} Matrix', pad=16)
+    ax.hist(hist_data, bins=30, density=True,  facecolor = '#2ab0ff', edgecolor='#169acf', linewidth=0.5)
     ax.set_xlabel('Sweeps [-]')
-    ax.set_ylabel('Proability [%]')
-    plt.show()
+    ax.set_ylabel('Normalised Probability [%]')
+    plt.savefig(f'GOM_Equlibrium_Time_Hist_{N}N.png')
 
 
 
@@ -88,7 +86,6 @@ def COM_velocity():
     ycm = rawData[:,2]
     
     fig, ax = plt.subplots(1, 2, figsize=(9, 4))
-    fig.suptitle(f'Glider Center of Mass', fontsize=16)
     fig.subplots_adjust(top=0.8, hspace=0.55, wspace=0.4)
 
     xx = np.arange(200)
@@ -100,29 +97,36 @@ def COM_velocity():
     my, cy = params2
 
     # setting figure title
-    ax[0].set_title('X-Component', pad=10)
-    ax[0].errorbar(time, xcm, marker='o', markersize = 3, linestyle='', color='black', label='Glider COM')
+    ax[0].set_title(f'COM X-Component Position', pad=10)
+    ax[0].errorbar(time, xcm, marker='o', markersize = 3, linestyle='', color='black', label='Glider X-Comp. COM')
     ax[0].errorbar(xx[20:80], line(xx[20:80], mx, cx), linestyle='-', color='r', label=f'Gradient={np.round(mx,2)}\nY-Intercept={np.round(cx,2)}')
     ax[0].set_xlabel('Sweeps [-]')
-    ax[0].set_ylabel('Center of Mass [-]')
+    ax[0].set_ylabel('X-Component Position [-]')
     ax[0].legend(loc=0, prop={'size': 6})
 
-    ax[1].set_title('Y-Component', pad=10)
-    ax[1].errorbar(time, ycm, marker='o', markersize = 3, linestyle='', color='black', label='Glider COM')
+    ax[1].set_title('COM Y-Component Position', pad=10)
+    ax[1].errorbar(time, ycm, marker='o', markersize = 3, linestyle='', color='black', label='Glider Y-Comp. COM')
     ax[1].errorbar(xx[20:80], line(xx[20:80], my, cy), linestyle='-', color='r', label=f'Gradient={np.round(my,2)}\nY-Intercept={np.round(cy,2)}')
     ax[1].set_xlabel('Sweeps [-]')
-    ax[1].set_ylabel('Center of Mass [-]')
+    ax[1].set_ylabel('X-Component Position [-]')
     ax[1].legend(loc=2, prop={'size': 6})
 
-    plt.show()
+    fig.suptitle(f'Glider Center of Mass Velocity-{np.round(np.sqrt(my**2 + mx**2), 2)} pixels/sweep', fontsize=16)
+
+    # ax[0].text(0, 0, f'COM velocity {np.round(np.sqrt(my**2 + mx**2), 2)}')
+
+    plt.savefig(f'GOM_CoM_{N}N.png')
 
     return 0
 
 
 def main():
+
+    global N
+    N=50
     # SingleEquilibrium()
-    plotHist()
-    # COM_velocity()
+    # plotHist()
+    COM_velocity()
     return 0
 
 main()
