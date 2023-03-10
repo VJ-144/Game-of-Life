@@ -33,7 +33,7 @@ def main():
         new_lattice = lattice.copy()
         mat = np.zeros([len(p1_list), len(p3_list)])
 
-        data2=open(f'SIRS_Model__TotalData_{BatchRun}','w')
+        data=open(f'SIRS_Model__TotalData_{BatchRun}','w')
         for i, p1 in enumerate(p1_list):
                 for j, p3 in enumerate(p3_list):
 
@@ -47,9 +47,9 @@ def main():
                     mat[i,j] += averageInfected 
                     print(f'completed @ P1-{p1} P2-{p2} P3-{p3}\n')
 
-                    data2.write('{0:5.5e} {1:5.5e} {2:5.5e} {3:5.5e} {4:5.5e} {5:5.5e} {6:5.5e}\n'.format(p1, p2, p3, immune, averageInfected, varience_infected, var_err))
+                    data.write('{0:5.5e} {1:5.5e} {2:5.5e} {3:5.5e} {4:5.5e} {5:5.5e} {6:5.5e}\n'.format(p1, p2, p3, immune, averageInfected, varience_infected, var_err))
 
-        data2.close()
+        data.close()
 
     # save matrix in here
 
@@ -93,7 +93,7 @@ def main():
         for i, p_imm in enumerate(p_imm):
 
                 averageInfected, varience_infected, var_err = SIRS.update_SIRS(N, p_new, new_lattice, p_imm)
-                data2.write('{0:5.5e} {1:5.5e} {2:5.5e} {3:5.5e} {4:5.5e} {5:5.5e} {6:5.5e}\n'.format(p1, p2, p3, p_imm, averageInfected, varience_infected, var_err))
+                data.write('{0:5.5e} {1:5.5e} {2:5.5e} {3:5.5e} {4:5.5e} {5:5.5e} {6:5.5e}\n'.format(p1, p2, p3, p_imm, averageInfected, varience_infected, var_err))
                 new_lattice = lattice.copy()
 
                 print(f'completed @ P_Imm-{p_imm}\n')
