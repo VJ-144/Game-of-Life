@@ -33,7 +33,7 @@ def main():
         new_lattice = lattice.copy()
         mat = np.zeros([len(p1_list), len(p3_list)])
 
-        data=open(f'SIRS_Model__TotalData_{BatchRun}','w')
+        data=open(f'SIRS_Model__TotalData_{BatchRun}.txt','w')
         for i, p1 in enumerate(p1_list):
                 for j, p3 in enumerate(p3_list):
 
@@ -63,7 +63,7 @@ def main():
         p1_list = np.linspace(0.2, 0.5, 31)
         new_lattice = lattice.copy()
 
-        data=open(f'SIRS_Model_TotalData_{BatchRun}','w')
+        data=open(f'SIRS_Model_TotalData_{BatchRun}.txt','w')
         for i, p1 in enumerate(p1_list):
 
                 p1 = np.round(p1, 2)
@@ -89,7 +89,7 @@ def main():
         
         new_lattice = lattice.copy()
 
-        data=open(f'SIRS_Model__TotalData_{BatchRun}','w')
+        data=open(f'SIRS_Model__TotalData_{BatchRun}.txt','w')
         for i, p_imm in enumerate(p_imm):
 
                 averageInfected, varience_infected, var_err = SIRS.update_SIRS(N, p_new, new_lattice, p_imm)
