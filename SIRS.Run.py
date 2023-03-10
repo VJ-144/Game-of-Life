@@ -22,50 +22,87 @@ import pandas as pd
 def main():
 
     N, p, BatchRun, immune = SIRS.initialise_simulation()
-
-
     lattice = np.random.choice([-1,0,1], size=[N,N])
 
-    if (BatchRun=='True'):
+    if (BatchRun=='HeatMap'):
 
         p2 = 0.5
-        # p1_list = np.linspace(0, 1, 21)
-        # p3_list = np.linspace(0, 1, 21)
-        # p1_list = np.linspace(0.5, 1, 11)
-
-        # varience plots p1 --> 0.2 to 0.5
-        p1_list = np.linspace(0.2, 0.5, 31)
-        p3 = 0.5
-
+        p1_list = np.linspace(0, 1, 21)
+        p3_list = np.linspace(0, 1, 21)
 
         new_lattice = lattice.copy()
-        # mat = np.zeros([len(p1_list), len(p3_list)])
+        mat = np.zeros([len(p1_list), len(p3_list)])
 
-        data2=open( 'SIRS_Model_Varience','w')
+        data2=open(f'SIRS_Model__TotalData_{BatchRun}','w')
         for i, p1 in enumerate(p1_list):
-                # for j, p3 in enumerate(p3_list):
+                for j, p3 in enumerate(p3_list):
+
+                    p1 = np.round(p1, 2)
+                    p3 = np.round(p3, 2)
+                    p_new = (p1, p2, p3)
+
+                    averageInfected, varience_infected, var_err = SIRS.update_SIRS(N, p_new, new_lattice, immune)
+                    new_lattice = lattice.copy()
+
+                    mat[i,j] += averageInfected 
+                    print(f'completed @ P1-{p1} P2-{p2} P3-{p3}\n')
+
+                    data2.write('{0:5.5e} {1:5.5e} {2:5.5e} {3:5.5e} {4:5.5e} {5:5.5e} {6:5.5e}\n'.format(p1, p2, p3, immune, averageInfected, varience_infected, var_err))
+
+        data2.close()
+
+    # save matrix in here
+
+
+    elif(BatchRun=='VarWave'):
+
+        p2 = 0.5
+        p3 = 0.5
+
+        # varience plots p1 --> 0.2 to 0.5 in increments of 0.001
+        p1_list = np.linspace(0.2, 0.5, 31)
+        new_lattice = lattice.copy()
+
+        data=open(f'SIRS_Model_TotalData_{BatchRun}','w')
+        for i, p1 in enumerate(p1_list):
 
                 p1 = np.round(p1, 2)
-                # p3 = np.round(p3, 2)
                 p_new = (p1, p2, p3)
 
                 averageInfected, varience_infected, var_err = SIRS.update_SIRS(N, p_new, new_lattice, immune)
                 new_lattice = lattice.copy()
 
-                # mat[i,j] += averageInfected 
                 print(f'completed @ P1-{p1} P2-{p2} P3-{p3}\n')
 
-                data2.write('{0:5.5e} {1:5.5e} {2:5.5e} {3:5.5e} {4:5.5e} {5:5.5e} {6:5.5e}\n'.format(p1, p2, p3, immune, averageInfected, varience_infected, var_err))
+                data.write('{0:5.5e} {1:5.5e} {2:5.5e} {3:5.5e} {4:5.5e} {5:5.5e} {6:5.5e}\n'.format(p1, p2, p3, immune, averageInfected, varience_infected, var_err))
 
-        data2.close()
+        data.close()
+
+    elif(BatchRun=='Immune'):
+
+        p2 = 0.5
+        p3 = 0.5
+        p1 = 0.5
+        
+        p_new = (p1, p2, p3)
+        p_imm = np.linspace(0, 1, 21)
+        
+        new_lattice = lattice.copy()
+
+        data=open(f'SIRS_Model__TotalData_{BatchRun}','w')
+        for i, p_imm in enumerate(p_imm):
+
+                averageInfected, varience_infected, var_err = SIRS.update_SIRS(N, p_new, new_lattice, p_imm)
+                data2.write('{0:5.5e} {1:5.5e} {2:5.5e} {3:5.5e} {4:5.5e} {5:5.5e} {6:5.5e}\n'.format(p1, p2, p3, p_imm, averageInfected, varience_infected, var_err))
+                new_lattice = lattice.copy()
+
+                print(f'completed @ P_Imm-{p_imm}\n')
+
+        data.close()
 
 
-        # df = pd.DataFrame(data=mat.astype(float))
-        # df.to_csv(f'SIRS_Proability_Matrix_Immune{immune}', sep=' ', header=False, float_format='%.2f', index=False)
-
-
-    elif (BatchRun=='False'):
-        print(SIRS.update_SIRS(N, p, lattice, immune))
+    elif (BatchRun=='Single'):
+        SIRS.update_SIRS(N, p, lattice, immune)
 
 
 main()
