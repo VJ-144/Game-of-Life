@@ -30,15 +30,16 @@ def main():
         lattice = np.random.choice([0,1], size=[N,N])
 
         infected_sites, sweep_times = func.Run_infection(N, p, lattice)
-        np.savetxt(f'Infected_Data_{BatchRun}Run_{p}p.txt', np.array([infected_sites, sweep_times]).T)
+        frac_infected = np.asarray(infected_sites)/(N*N)
+        np.savetxt(f'Infected_Data_{BatchRun}Run_{p}p.txt', np.array([frac_infected, sweep_times]).T)
 
 
     elif(BatchRun=='Phase'):
 
 
-        # varience plots p1 --> 0.55 to 0.7 in increments of 0.001
+        # varience plots p1 --> 0.55 to 0.7 in increments of 0.005
         p1_list = np.linspace(0.55, 0.7, 31)
-        # p1_list = np.linspace(0.55, 0.59, 5)
+
         lattice = np.random.choice([0,1], size=[N,N])
 
         new_lattice = lattice.copy()
@@ -46,18 +47,18 @@ def main():
         data=open(f'Infected_p0.55-0.7_{BatchRun}.txt','w')
         for i, p1 in enumerate(p1_list):
 
-                p1 = np.round(p1, 2)
+                p1 = np.round(p1, 3)
 
                 infected_sites, sweep_times = func.Run_infection(N, p1, new_lattice)
-                averge_infected = np.mean(infected_sites)
-                varience_infected = np.var(infected_sites)
-                var_err = func.BootstrapError(infected_sites, N)
+                averge_infected = np.mean(infected_sites)/(N*N)
+                varience_infected = np.var(infected_sites)/(N*N)
+                var_err = func.BootstrapError(infected_sites, N)/(N*N)
 
                 new_lattice = lattice.copy()
 
                 print(f'Complete Simulation @ p={p1}')
 
-                data.write('{0:5.5e} {1:5.5e} {2:5.5e} {3:5.5e}\n'.format(averge_infected/(N*N), varience_infected/(N*N), var_err, p1))
+                data.write('{0:5.5e} {1:5.5e} {2:5.5e} {3:5.5e}\n'.format(averge_infected, varience_infected, var_err, p1))
 
         data.close()
 
@@ -67,22 +68,36 @@ def main():
         lattice = np.random.choice([0], size=[N,N])
         new_lattice = lattice.copy()
 
-        
-        for run in range(50):
+        active = []
 
-            # placing a random infected cell somewhere
-            rand_idx = np.random.choice([N**2], size=[1])[0]
-            new_lattice[rand_idx] = 1
+        NumOfRuns = 200
+
+        # placing a random infected cell somewhere
+        xx_idx1 = np.random.randint(low=0, high=N-1, size=NumOfRuns)
+        yy_idx1 = np.random.randint(low=0, high=N-1, size=NumOfRuns)
+        
+        for run in range(NumOfRuns):
+
+            # # placing a random infected cell somewhere
+            xx_idx = xx_idx1[run]
+            yy_idx = yy_idx1[run]
+
+            new_lattice[xx_idx, yy_idx] = 1
 
             infected_sites, sweep_times = func.Run_infection(N, p, new_lattice, nstep=300)
+            infected_sites = np.asarray(infected_sites)
+            # sets infected matrix at time step sweep equal to 1
+            infected_sites[infected_sites>0] = 1
 
-            data=open(f'Survival\p{p}\Infected_p{p}_{run}.txt','w')
-            data.write('{0:5.5e} {1:5.5e} {2:5.5e} {3:5.5e}\n'.format(run, p, infected_sites[-1], sweep_times[-1]))
+            active.append(infected_sites)
+            # print(active)
+
             new_lattice = lattice.copy()
 
-            print(f'Completed Run {run}\n')
+            print(f'Completed Run {run}')
 
-        data.close()
+        proabilites = np.sum(active, axis=0)
+        np.savetxt(f'SurvivalProabilites_p{p}.txt', proabilites)
 
 
 

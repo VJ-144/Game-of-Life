@@ -34,20 +34,27 @@ def plotSurvival_Hist(data, p):
     plt.savefig(f'Survival_{N}x{N}N_{p}p_Hist.png')
 
 
-def plotSurvival_Log():
+def plotSurvival_Log(prob1, prob2, prob3):
 
     fig, ax = plt.subplots(1, 1, figsize=(7, 5))
 
-    survival_p = []
-    p = []
+    time = np.linspace(0, 300, 301)[1:]
 
-    ax.set_title(f'Infected Sites for {N}N {p}p Simulation', pad=10)
+
+    ax.set_title(f'Survival Proability for Infected Sites', pad=10)
     ax.set_xlabel('Log Time [sweeps]')
     ax.set_ylabel('Log Survival Proabilities [-]')
-    ax.plot(survival_p, infected, marker='o', markersize = 4, linestyle='--', color='black', capsize=3)
-    plt.savefig(f'Survival_{N}x{N}N_Log.png')
+    ax.plot(np.log10(time), np.log10(prob1), marker='', markersize = 4, linestyle='--', color='red', label='p=0.6')
+    ax.plot(np.log10(time), np.log10(prob2), marker='', markersize = 4, linestyle='--', color='blue', label='p=0.625')
+    ax.plot(np.log10(time), np.log10(prob3), marker='', markersize = 4, linestyle='--', color='limegreen', label='p=0.65')
 
-    return 0
+
+    plt.legend()
+
+    plt.savefig(f'Survival_{N}x{N}N_Log.png')
+    plt.show()
+
+
 
 def plotPhase(AllData):
 
@@ -55,8 +62,6 @@ def plotPhase(AllData):
     varience_inf = AllData[:,1]
     var_err = AllData[:,2]
     p = AllData[:,3]
-
-    print(p)
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
 
@@ -73,20 +78,22 @@ def plotPhase(AllData):
 
 
     plt.savefig(f'Phase_trans_{N}x{N}_Wave.png')
+    plt.show()
 
 
 def main():
     global N
     N = 50
 
-    single_run = np.loadtxt('Infected_Data_SingleRun_0.6p.txt')
-    Phase = np.loadtxt('Infected_p0.55-0.7_Phase.txt')
-    # survival_single = np.loadtxt(path + 'HeatMap\\SIRS_Proability_Matrix_HeatMap.txt')
+    # single_run = np.loadtxt('Infected_Data_SingleRun_0.7p.txt')
+    # Phase = np.loadtxt('Infected_p0.55-0.7_Phase_good.txt')
+    prob1 = np.loadtxt('SurvivalProabilites_p0.6.txt')
+    prob2 = np.loadtxt('SurvivalProabilites_p0.625.txt')
+    prob3 = np.loadtxt('SurvivalProabilites_p0.65.txt')
 
-    plotInfected(single_run, p=0.6)
+    # plotInfected(single_run, p=0.7)
     # plotPhase(Phase)    
-    # plotSurvival_Hist(survival_single, p=0)
-    # plotSurvival_Log()``
+    plotSurvival_Log(prob1, prob2, prob3)
 
     
 

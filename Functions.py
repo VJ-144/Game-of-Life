@@ -121,13 +121,13 @@ def GenerateRandom_Idx(N):
     # returns tuple of indice i and j arrays to sample the spin configuration 
     return (i, j)
 
-def Run_infection(N, p, lattice, nstep=10500):
+def Run_infection(N, p, lattice, nstep=1000):
 
     # setting up animantion figure
-    fig = plt.figure()
-    cmap = ListedColormap(['dodgerblue', 'red'])
-    im=plt.imshow(lattice, animated=True, cmap=cmap, vmin=-1, vmax=2)
-    fig.colorbar(im)
+    # fig = plt.figure()
+    # cmap = ListedColormap(['dodgerblue', 'red'])
+    # im=plt.imshow(lattice, animated=True, cmap=cmap, vmin=0, vmax=2)
+    # fig.colorbar(im)
 
     # number of sweeps for simulation
     # nstep=10500
@@ -159,13 +159,13 @@ def Run_infection(N, p, lattice, nstep=10500):
             if (cell == 1):
 
                 p1_threshold = np.random.random()
-                p2_threshold = np.random.random()
+                # p2_threshold = np.random.random()
 
                 # makes healthy if passes check
                 if (1-p > p1_threshold): lattice[i,j] = 0
 
-                # infects neighbours
-                if (p > p2_threshold): lattice = Infect_neighbors((i,j), lattice, N)
+                # infects neighbours (p > p1_threshold)
+                else: lattice = Infect_neighbors((i,j), lattice, N)
                     
 
         # count the number of infected states
@@ -178,7 +178,7 @@ def Run_infection(N, p, lattice, nstep=10500):
 
         new_lattice = lattice.copy()
 
-        if(n%10==0):      
+        if(n%1==0):      
 
             # prints current number of sweep to terminal
             sweeps +=10
@@ -187,22 +187,22 @@ def Run_infection(N, p, lattice, nstep=10500):
             infected_sites.append(Num_infected_sites1)
             sweep_times.append(sweeps)
 
-            if (Num_infected_sites1==Num_infected_sites2): 
-                counter+=1
-            else:
-                counter=0
+            # if (Num_infected_sites1==Num_infected_sites2): 
+            #     counter+=1
+            # else:
+            #     counter=0
 
-            if(counter>=10):
+            # if(counter>=10):
 
-                print('Simulation Converged Early')
-                # print(f'Avg. Number of Infected Sites = {averge_infected}')
+            #     print('Simulation Converged Early')
+            #     # print(f'Avg. Number of Infected Sites = {averge_infected}')
 
-                return infected_sites, sweep_times
+            #     return infected_sites, sweep_times
 
             # animates spin configuration 
-            plt.cla()
-            im=plt.imshow(lattice, animated=True, cmap=cmap, vmin=-1, vmax=2)
-            plt.draw()
-            plt.pause(0.0001) 
+            # plt.cla()
+            # im=plt.imshow(lattice, animated=True, cmap=cmap, vmin=0, vmax=2)
+            # plt.draw()
+            # plt.pause(0.0001) 
 
     return infected_sites, sweep_times
